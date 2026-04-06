@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  backend:
+    build: ./backend
+    container_name: effective-mobile-backend
+    restart: unless-stopped
+    networks:
+      - internal-net
+	# Огранизация доступа только по имени сервиса
+nginx:
+    build: ./nginx
+    container_name: effective-mobile-nginx
+    ports:
+      - "${NGINX_HOST_PORT}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - internal-net
+
+networks:
+  internal-net:
+    driver: bridge
+    name: effective-mobile-net
+
+
